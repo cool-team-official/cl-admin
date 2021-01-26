@@ -1,3 +1,5 @@
+import { ROUTER } from "./package";
+
 export default function ({ routes, router }) {
 	router.$plugin = {
 		addRoutes: (list, options) => {
@@ -30,7 +32,7 @@ export default function ({ routes, router }) {
 				{
 					path: "/",
 					component: (resolve) => require([`@/pages/layout/index.vue`], resolve),
-					children: [...list, ...routes]
+					children: [...routes, ...ROUTER.views, ...list]
 				},
 				{
 					path: "*",

@@ -1,5 +1,10 @@
 import Vue from "vue";
-import { deepMerge } from "../utils";
+import { deepMerge, isString } from "../utils";
+import { deps } from "@/cool/packages";
+
+export const ROUTER = {
+	views: []
+};
 
 export default function (options) {
 	if (!options.events) {
@@ -10,18 +15,36 @@ export default function (options) {
 	const files = require.context("@/cool/packages/", true, /index.js/);
 
 	// 列表
-	const packages = files
-		.keys()
-		.filter((e) => {
-			return e != "./index.js" && e.split("/").length == 3 && !e.includes("--ignore");
-		})
+	const packages = deps
 		.map((e) => {
-			let m = files(e);
+			if (!e) {
+				return null;
+			}
 
-			if (m && m.default) {
+			if (isString(e)) {
+				e = [e]
+			}
+
+			let [name, options = {}] = e;
+
+			// 检测是否开启
+			if (options.enable === false) {
+				return false;
+			}
+
+			let mdl = null;
+
+			try {
+				mdl = files(`./${name}/index.js`);
+			} catch (e) {
+				console.warn("未检测到插件", name);
+			}
+
+			if (mdl && mdl.default) {
 				return {
-					...m.default,
-					name: e.split("/")[1]
+					...mdl.default,
+					name,
+					options
 				};
 			} else {
 				return null;
@@ -30,8 +53,7 @@ export default function (options) {
 		.filter(Boolean);
 
 	// 安装
-	for (let i in packages) {
-		let pkg = packages[i];
+	packages.forEach((pkg) => {
 		let { store, components, service, directives, filters, pages, views, name } = pkg;
 		let { onInstall, onSuccess, onFail } = options.events[name] || {};
 
@@ -84,23 +106,12 @@ export default function (options) {
 
 				// 注册视图
 				if (views) {
-					let children = []
-
 					for (let i in views) {
-						children.push({
+						ROUTER.views.push({
 							path: i,
 							component: views[i]
-						})
+						});
 					}
-
-					console.log(options.router.options.routes)
-
-					options.router.addRoutes([
-						{
-							path: '/',
-							children
-						}
-					]);
 				}
 
 				// 包安装成功
@@ -109,7 +120,7 @@ export default function (options) {
 				}
 			};
 
-			// 包安装时
+			// 安装时
 			if (onInstall) {
 				onInstall(pkg, { next });
 			} else {
@@ -118,10 +129,10 @@ export default function (options) {
 		} catch (e) {
 			console.error(e);
 
-			// 包安装失败
+			// 安装失败
 			if (onFail) {
 				onFail(pkg, e);
 			}
 		}
-	}
+	});
 }

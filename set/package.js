@@ -1,28 +1,27 @@
 import Vue from "vue";
 import { deepMerge, isString } from "../utils";
-import { deps } from "@/cool/packages";
-
-export const ROUTER = {
-	views: []
-};
+import { deps } from "cl-pkg";
 
 export default function (options) {
 	if (!options.events) {
 		options.events = {};
 	}
 
-	// 匹配文件
-	const files = require.context("@/cool/packages/", true, /index.js/);
+	// 匹配
+	const files = require.context("cl-pkg/", true, /index.js/);
 
-	// 列表
-	const packages = deps
+	// 路由视图
+	let depsViews = [];
+
+	// 检测
+	let list = deps
 		.map((e) => {
 			if (!e) {
 				return null;
 			}
 
 			if (isString(e)) {
-				e = [e]
+				e = [e];
 			}
 
 			let [name, options = {}] = e;
@@ -50,19 +49,20 @@ export default function (options) {
 				return null;
 			}
 		})
-		.filter(Boolean);
+		.filter(Boolean)
+		.reverse()
 
 	// 安装
-	packages.forEach((pkg) => {
-		let { store, components, service, directives, filters, pages, views, name } = pkg;
+	list.forEach((dep) => {
+		let { store, components, service, directives, filters, pages, views, name } = dep;
 		let { onInstall, onSuccess, onFail } = options.events[name] || {};
 
 		try {
 			const next = () => {
 				// 注册vuex模块
 				if (store) {
-					for (let storeName in store) {
-						options.store.registerModule(storeName, store[storeName]);
+					for (let i in store) {
+						options.store.registerModule(`${name}-${i}`, store[i]);
 					}
 				}
 
@@ -107,7 +107,7 @@ export default function (options) {
 				// 注册视图
 				if (views) {
 					for (let i in views) {
-						ROUTER.views.push({
+						depsViews.push({
 							path: i,
 							component: views[i]
 						});
@@ -116,13 +116,13 @@ export default function (options) {
 
 				// 包安装成功
 				if (onSuccess) {
-					onSuccess(pkg);
+					onSuccess(dep);
 				}
 			};
 
 			// 安装时
 			if (onInstall) {
-				onInstall(pkg, { next });
+				onInstall(dep, { next });
 			} else {
 				next();
 			}
@@ -131,8 +131,12 @@ export default function (options) {
 
 			// 安装失败
 			if (onFail) {
-				onFail(pkg, e);
+				onFail(dep, e);
 			}
 		}
 	});
+
+	// 设置缓存
+	options.store.commit("SET_DEPS_VIEWS", depsViews);
+	options.store.commit("SET_DEPS", list);
 }

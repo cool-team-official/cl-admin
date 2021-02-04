@@ -1,6 +1,4 @@
-import { ROUTER } from "./package";
-
-export default function ({ routes, router }) {
+export default function ({ routes, router, store }) {
 	router.$plugin = {
 		addRoutes: (list, options) => {
 			if (!options) {
@@ -18,7 +16,7 @@ export default function ({ routes, router }) {
 							)
 						) {
 							e.meta.iframeUrl = e.viewPath;
-							e.component = () => import(`@/pages/iframe/index.vue`);
+							e.component = () => import(`cl-pkg/base/pages/iframe/index.vue`);
 						} else {
 							e.component = () => import(`@/${e.viewPath}`);
 						}
@@ -32,7 +30,7 @@ export default function ({ routes, router }) {
 				{
 					path: "/",
 					component: (resolve) => require([`@/pages/layout/index.vue`], resolve),
-					children: [...routes, ...ROUTER.views, ...list]
+					children: [...routes, ...store.getters.depsViews, ...list]
 				},
 				{
 					path: "*",

@@ -12,13 +12,13 @@ export default function ({ routes, router, store }) {
 					if (url) {
 						if (
 							/^(http[s]?:\/\/)([0-9a-z.]+)(:[0-9]+)?([/0-9a-z.]+)?(\?[0-9a-z&=]+)?(#[0-9-a-z]+)?/i.test(
-								e.viewPath
+								url
 							)
 						) {
-							e.meta.iframeUrl = e.viewPath;
-							e.component = () => import(`cl-pkg/base/pages/iframe/index.vue`);
+							e.meta.iframeUrl = url;
+							e.component = () => import(`cl-component/base/pages/iframe/index.vue`);
 						} else {
-							e.component = () => import(`@/${e.viewPath}`);
+							e.component = () => import(`@/${url}`);
 						}
 					} else {
 						e.redirect = "/404";
@@ -30,7 +30,7 @@ export default function ({ routes, router, store }) {
 				{
 					path: "/",
 					component: (resolve) => require([`@/pages/layout/index.vue`], resolve),
-					children: [...routes, ...store.getters.depsViews, ...list]
+					children: [...routes, ...store.getters.componentView, ...list]
 				},
 				{
 					path: "*",

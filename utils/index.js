@@ -164,18 +164,22 @@ export function deepTree(list) {
 
 export function revDeepTree(list = []) {
 	let d = [];
+	let id = 0;
 
-	const deep = (list) => {
+	const deep = (list, parentId) => {
 		list.forEach((e) => {
+			e.id = id++;
+			e.parentId = parentId;
+
 			d.push(e);
 
 			if (e.children && isArray(e.children)) {
-				deep(e.children);
+				deep(e.children, e.id);
 			}
 		});
 	};
 
-	deep(list || []);
+	deep(list || [], null);
 
 	return d;
 }

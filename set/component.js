@@ -1,14 +1,11 @@
 import Vue from "vue";
-import { deepMerge, isString, isObject } from "../utils";
-import cool from "@/cool";
+import cool from "cool";
+import { deepMerge, isObject } from "../utils";
 
 export default function (options = {}) {
 	if (!options.events) {
 		options.events = {};
 	}
-
-	// 匹配
-	const files = require.context("cl-component/", true, /index.js/);
 
 	// 组件注册的视图
 	let componentView = [];
@@ -104,30 +101,19 @@ export default function (options = {}) {
 
 		let comp = null;
 
-		if (isString(e)) {
-			comp = {
-				name: e
-			};
-		} else if (isObject(e)) {
+		if (isObject(e)) {
 			comp = e;
 		} else {
 			comp = {
 				name: e[0],
-				options: e[1]
+				value: e[1],
+				options: e[2]
 			};
 		}
 
 		// 是否开启
 		if (comp.options && comp.options.enable === false) {
 			return null;
-		}
-
-		if (!comp.value) {
-			try {
-				comp.value = files(`./${comp.name}/index.js`).default;
-			} catch (e) {
-				console.warn("未检测到插件", comp.name);
-			}
 		}
 
 		if (comp) {

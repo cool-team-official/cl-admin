@@ -1,19 +1,19 @@
 {
-	"name": "cl-admin",
-	"version": "1.0.10",
-	"main": "index.js",
-	"repository": "https://github.com/cool-team-official/cl-admin.git",
-	"author": "icssoa <615206459@qq.com>",
-	"license": "MIT",
-	"typings": "types/index.d.ts",
-	"keywords": [
-		"crud",
-		"admin",
-		"vue",
-		"element-ui",
-		"element-plus",
-		"vue3",
-		"vue-router",
-		"vue-vuex"
-	]
+  "name": "cl-admin",
+  "version": "1.1.0",
+  "main": "index.js",
+  "repository": "https://github.com/cool-team-official/cl-admin.git",
+  "author": "icssoa <615206459@qq.com>",
+  "license": "MIT",
+  "typings": "types/index.d.ts",
+  "keywords": [
+    "crud",
+    "admin",
+    "vue",
+    "element-ui",
+    "element-plus",
+    "vue3",
+    "vue-router",
+    "vue-vuex"
+  ]
 }

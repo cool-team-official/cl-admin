@@ -1,42 +1,10 @@
 import { routerMode } from "@/config/env";
 
-export const revisePath = (path) => {
-	if (!path) {
-		return "";
-	}
-
-	if (path[0] == "/") {
-		return path;
-	} else {
-		return `/${path}`;
-	}
-};
-
 export function getUrlParam(name) {
 	let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
 	let r = window.location.search.substr(1).match(reg);
 	if (r != null) return decodeURIComponent(r[2]);
 	return null;
-}
-
-export function firstMenu(list) {
-	let path = "";
-
-	const fn = (arr) => {
-		arr.forEach((e) => {
-			if (e.type == 1) {
-				if (!path) {
-					path = e.path;
-				}
-			} else {
-				fn(e.children);
-			}
-		});
-	};
-
-	fn(list);
-
-	return path || "/404";
 }
 
 export function isPc() {
@@ -269,16 +237,6 @@ export function clone(obj) {
 	return Object.create(Object.getPrototypeOf(obj), Object.getOwnPropertyDescriptors(obj));
 }
 
-export function certainProperty(obj, keys) {
-	return keys.reduce((result, key) => {
-		if (obj.hasOwnProperty(key)) {
-			result[key] = obj[key];
-		}
-
-		return result;
-	}, {});
-}
-
 export function deepMerge(a, b) {
 	let k;
 	for (k in b) {
@@ -295,27 +253,4 @@ export function contains(parent, node) {
 		while (node && (node = node.parentNode)) if (node === parent) return true;
 		return false;
 	}
-}
-
-export function moreList(res, { list, pagination }) {
-	const { page, size } = res.pagination;
-	const len = res.list.length;
-	const max = list.length;
-
-	if (page == 1) {
-		list.splice(0, max, ...res.list);
-	} else {
-		let start = max - (max % size);
-		let end = start + len;
-
-		list.splice(start, end, ...res.list);
-	}
-
-	if (len == size) {
-		res.pagination.page += 1;
-	}
-
-	Object.assign(pagination, res.pagination);
-
-	return page != 1;
 }

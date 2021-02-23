@@ -1,10 +1,13 @@
-export default function ({ routes, router, store }) {
+import { Message } from 'element-ui'
+
+export default function ({ router }) {
 	router.$plugin = {
-		addRoutes: (list, options) => {
+		addViews: (list, options) => {
 			if (!options) {
 				options = {};
 			}
 
+			// Parse route config
 			list.map((e) => {
 				if (!e.component) {
 					let url = e.viewPath;
@@ -18,7 +21,9 @@ export default function ({ routes, router, store }) {
 							e.meta.iframeUrl = url;
 							e.component = () => import(`cl-component/base/pages/iframe/index.vue`);
 						} else {
-							e.component = () => import(`@/${url}`);
+							if (url.indexOf('views/') === 0) {
+								e.component = () => import(`@/${url}`)
+							}
 						}
 					} else {
 						e.redirect = "/404";
@@ -26,17 +31,18 @@ export default function ({ routes, router, store }) {
 				}
 			});
 
-			router.addRoutes([
-				{
-					path: "/",
-					component: (resolve) => require([`@/pages/layout/index.vue`], resolve),
-					children: [...routes, ...store.getters.componentView, ...list]
-				},
-				{
+			// Batch add route
+			list.forEach(e => {
+				router.addRoute('index', e)
+			})
+
+			// Add 404 rule
+			if (!options.ignore404) {
+				router.addRoute({
 					path: "*",
 					redirect: "/404"
-				}
-			]);
+				})
+			}
 		},
 
 		to: (url) => {
@@ -46,15 +52,26 @@ export default function ({ routes, router, store }) {
 		}
 	};
 
+	let lock = false
+
 	router.onError((err) => {
-		if (err.code == "MODULE_NOT_FOUND") {
-			console.error(
-				"页面地址错误",
-				err.message.replace("Cannot find module ", ""),
-				"文件不存在"
-			);
-		} else {
-			console.error(err);
+		if (!lock) {
+			lock = true;
+
+			if (err.code == "MODULE_NOT_FOUND") {
+				console.error(
+					err.message.replace("Cannot find module ", ""),
+					"路由组件不存在"
+				);
+
+				Message.error(`路由组件路径错误`)
+			} else {
+				console.error(err);
+			}
+
+			setTimeout(() => {
+				lock = false
+			}, 0)
 		}
 	});
 }

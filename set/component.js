@@ -1,14 +1,14 @@
 import Vue from "vue";
 import cool from "cool";
-import { deepMerge, isObject } from "../utils";
+import { deepMerge, isFunction, isObject } from "../utils";
 
 export default function (options = {}) {
 	if (!options.events) {
 		options.events = {};
 	}
 
-	// 组件注册的视图
-	let componentView = [];
+	// 组件模块
+	let componentModules = []
 
 	// 组件列表
 	let components = [];
@@ -55,24 +55,29 @@ export default function (options = {}) {
 
 				// 注册页面
 				if (pages) {
-					for (let i in pages) {
-						options.router.addRoutes([
-							{
-								path: i,
-								component: pages[i]
-							}
-						]);
-					}
+					pages.forEach(e => {
+						options.router.addRoute(e);
+					})
 				}
 
 				// 注册视图
 				if (views) {
-					for (let i in views) {
-						componentView.push({
-							path: i,
-							component: views[i]
-						});
-					}
+					views.forEach(e => {
+						if (e.moduleName) {
+							if (!e.meta) {
+								e.meta = {}
+							}
+
+							componentModules.push(e)
+						}
+						else {
+							options.router.$plugin.addViews([
+								e
+							], {
+								ignore404: true
+							})
+						}
+					})
 				}
 
 				// 包安装成功
@@ -111,6 +116,12 @@ export default function (options = {}) {
 			};
 		}
 
+		if (comp.value) {
+			if (isFunction(comp.value.install)) {
+				comp.value = comp.value.install(Vue, comp.options)
+			}
+		}
+
 		// 是否开启
 		if (comp.options && comp.options.enable === false) {
 			return null;
@@ -129,6 +140,6 @@ export default function (options = {}) {
 	});
 
 	// 设置缓存
-	options.store.commit("SET_COMPONENT_VIEWS", componentView);
+	options.store.commit("SET_COMPONENT_MODULES", componentModules);
 	options.store.commit("SET_COMPONENT", components);
 }

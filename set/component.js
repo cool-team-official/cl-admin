@@ -8,7 +8,7 @@ export default function (options = {}) {
 	}
 
 	// 组件模块
-	let componentModules = []
+	let componentModules = [];
 
 	// 组件列表
 	let components = [];
@@ -55,29 +55,32 @@ export default function (options = {}) {
 
 				// 注册页面
 				if (pages) {
-					pages.forEach(e => {
+					pages.forEach((e) => {
 						options.router.addRoute(e);
-					})
+					});
 				}
 
 				// 注册视图
 				if (views) {
-					views.forEach(e => {
-						if (e.moduleName) {
-							if (!e.meta) {
-								e.meta = {}
-							}
+					views.forEach((e) => {
+						if (!e.meta) {
+							e.meta = {};
+						}
 
-							componentModules.push(e)
+						if (e.moduleName) {
+							componentModules.push(e);
+						} else {
+							e.meta.label = e.label;
+
+							if (e.path) {
+								options.router.$plugin.addViews([e], {
+									ignore404: true
+								});
+							} else {
+								console.error(`[${name}-views]：path in null`);
+							}
 						}
-						else {
-							options.router.$plugin.addViews([
-								e
-							], {
-								ignore404: true
-							})
-						}
-					})
+					});
 				}
 
 				// 包安装成功
@@ -118,7 +121,7 @@ export default function (options = {}) {
 
 		if (comp.value) {
 			if (isFunction(comp.value.install)) {
-				comp.value = comp.value.install(Vue, comp.options)
+				comp.value = comp.value.install(Vue, comp.options);
 			}
 		}
 

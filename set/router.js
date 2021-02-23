@@ -1,4 +1,4 @@
-import { Message } from 'element-ui'
+import { Message } from "element-ui";
 
 export default function ({ router }) {
 	router.$plugin = {
@@ -21,8 +21,10 @@ export default function ({ router }) {
 							e.meta.iframeUrl = url;
 							e.component = () => import(`cl-component/base/pages/iframe/index.vue`);
 						} else {
-							if (url.indexOf('views/') === 0) {
-								e.component = () => import(`@/${url}`)
+							if (url.indexOf("views/") === 0) {
+								e.component = () => import(`@/${url}`);
+							} else {
+								console.error(url, "异常");
 							}
 						}
 					} else {
@@ -32,16 +34,16 @@ export default function ({ router }) {
 			});
 
 			// Batch add route
-			list.forEach(e => {
-				router.addRoute('index', e)
-			})
+			list.forEach((e) => {
+				router.addRoute("index", e);
+			});
 
 			// Add 404 rule
 			if (!options.ignore404) {
 				router.addRoute({
 					path: "*",
 					redirect: "/404"
-				})
+				});
 			}
 		},
 
@@ -52,26 +54,23 @@ export default function ({ router }) {
 		}
 	};
 
-	let lock = false
+	let lock = false;
 
 	router.onError((err) => {
 		if (!lock) {
 			lock = true;
 
 			if (err.code == "MODULE_NOT_FOUND") {
-				console.error(
-					err.message.replace("Cannot find module ", ""),
-					"路由组件不存在"
-				);
+				console.error(err.message.replace("Cannot find module ", ""), "路由组件不存在");
 
-				Message.error(`路由组件路径错误`)
+				Message.error(`路由组件路径错误`);
 			} else {
 				console.error(err);
 			}
 
 			setTimeout(() => {
-				lock = false
-			}, 0)
+				lock = false;
+			}, 0);
 		}
 	});
 }

@@ -68,7 +68,8 @@ export default class BaseService {
 	page(params) {
 		return this.request({
 			url: "/page",
-			params: {
+			method: "POST",
+			data: {
 				...params
 			}
 		});

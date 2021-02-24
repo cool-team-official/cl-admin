@@ -1,4 +1,5 @@
 import { routerMode } from "@/config/env";
+import storage from './storage'
 
 export function getUrlParam(name) {
 	let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -254,3 +255,5 @@ export function contains(parent, node) {
 		return false;
 	}
 }
+
+export { storage }

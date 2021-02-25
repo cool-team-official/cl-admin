@@ -44,7 +44,7 @@ export default {
      * @param {string} key 关键字
      */
     isExpired(key) {
-        return (this.getExpiration(key) || 0) - Date.parse(new Date()) <= 0;
+        return (this.getExpiration(key) || 0) - Date.parse(new Date()) <= 2000;
     },
 
     /**

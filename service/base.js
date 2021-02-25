@@ -46,11 +46,12 @@ export default class BaseService {
 			path += "/" + this.namespace;
 		}
 
-		if (options.url.indexOf("http") === 0) {
-		} else if (options.url[0] === "@") {
-			options.url = options.url.replace("@", "");
-		} else {
-			options.url = path + options.url;
+		if (options.url.indexOf("http") !== 0) {
+			if (options.url[0] === "@") {
+				options.url[0] = ''
+			} else {
+				options.url = path + options.url;
+			}
 		}
 
 		return request(options);
@@ -59,7 +60,8 @@ export default class BaseService {
 	list(params) {
 		return this.request({
 			url: "/list",
-			params: {
+			method: "POST",
+			data: {
 				...params
 			}
 		});

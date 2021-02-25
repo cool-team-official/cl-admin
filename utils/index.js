@@ -79,7 +79,11 @@ export function getBrowser() {
 }
 
 export function href(path, newWindow) {
-	let { search, origin } = window.location;
+	let { search, origin, pathname } = window.location;
+
+	if (pathname == path) {
+		return false
+	}
 
 	let url = "";
 
@@ -137,7 +141,10 @@ export function revDeepTree(list = []) {
 
 	const deep = (list, parentId) => {
 		list.forEach((e) => {
-			e.id = id++;
+			if (!e.id) {
+				e.id = id++;
+			}
+
 			e.parentId = parentId;
 
 			d.push(e);

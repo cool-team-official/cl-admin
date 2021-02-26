@@ -1,5 +1,7 @@
 import Vue from "vue";
-import cool from "cool";
+import Cool from "cool";
+import store from '@/store'
+import router from '@/router'
 import { deepMerge, isFunction, isObject } from "../utils";
 
 export default function (options = {}) {
@@ -15,15 +17,15 @@ export default function (options = {}) {
 
 	// 安装组件
 	function install(comp) {
-		let { store, components, service, directives, filters, pages, views, name } = comp;
+		let { store: _store, components, service, directives, filters, pages, views, name } = comp;
 		let { onInstall, onSuccess, onFail } = options.events[name] || {};
 
 		try {
 			const next = () => {
 				// 注册vuex模块
-				if (store) {
-					for (let i in store) {
-						options.store.registerModule(`${name}-${i}`, store[i]);
+				if (_store) {
+					for (let i in _store) {
+						store.registerModule(`${name}-${i}`, _store[i]);
 					}
 				}
 
@@ -36,7 +38,7 @@ export default function (options = {}) {
 
 				// 注册请求服务
 				if (service) {
-					deepMerge(options.store.$service, service);
+					deepMerge(store.$service, service);
 				}
 
 				// 注册指令
@@ -56,7 +58,7 @@ export default function (options = {}) {
 				// 注册页面
 				if (pages) {
 					pages.forEach((e) => {
-						options.router.addRoute(e);
+						router.addRoute(e);
 					});
 				}
 
@@ -73,7 +75,7 @@ export default function (options = {}) {
 							e.meta.label = e.label;
 
 							if (e.path) {
-								options.router.$plugin.addViews([e], {
+								router.$plugin.addViews([e], {
 									ignore404: true
 								});
 							} else {
@@ -102,7 +104,7 @@ export default function (options = {}) {
 	}
 
 	// 解析组件
-	cool.components.map((e) => {
+	Cool.components.map((e) => {
 		if (!e) {
 			return null;
 		}
@@ -143,6 +145,6 @@ export default function (options = {}) {
 	});
 
 	// 设置缓存
-	options.store.commit("SET_COMPONENT_MODULES", componentModules);
-	options.store.commit("SET_COMPONENT", components);
+	store.commit("SET_COMPONENT_MODULES", componentModules);
+	store.commit("SET_COMPONENT", components);
 }

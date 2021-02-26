@@ -1,6 +1,16 @@
+import VueRouter from 'vue-router'
 import { Message } from "element-ui";
+import store from "@/store";
+import router, { ignore } from '@/router'
+import storage from '../utils/storage'
 
-export default function ({ router }) {
+// Remove Navigating to current location (XXX) is not allowed
+const routerPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+	return routerPush.call(this, location).catch((error) => error);
+};
+
+export default function () {
 	router.$plugin = {
 		addViews: (list, options) => {
 			if (!options) {
@@ -53,6 +63,36 @@ export default function ({ router }) {
 			}
 		}
 	};
+
+	router.beforeEach((to, from, next) => {
+		const { token, browser } = store.getters
+
+		if (token) {
+			if (to.path.indexOf('/login') === 0) {
+				// 登录成功且 token 未过期，回到首页
+				if (!storage.isExpired('token')) {
+					return next('/')
+				}
+			} else {
+				// 添加路由进程
+				store.commit("ADD_PROCESS", {
+					label: (to.meta && to.meta.label) || to.name,
+					value: to.fullPath
+				});
+			}
+		} else {
+			if (!ignore.token.some((e) => to.path.indexOf(e) === 0)) {
+				return next("/login");
+			}
+		}
+
+		// H5 下关闭左侧菜单
+		if (browser.isMobile) {
+			store.commit("COLLAPSE_MENU", true);
+		}
+
+		next()
+	})
 
 	let lock = false;
 

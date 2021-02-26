@@ -1,7 +1,8 @@
 import Vue from "vue";
 import path from "path";
+import store from '@/store'
 
-export default function ({ store }) {
+export default function () {
 	const files = require.context("@/service/", true, /\.js$/);
 	const ignore = ["./request.js"];
 

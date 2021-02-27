@@ -32,6 +32,9 @@ interface Crud {
            advSearch: String,
            saveButtonText: String,
            closeButtonText: String,
+       },
+       table: {
+           "context-menu": Boolean
        }
    },
    fn: {
@@ -58,9 +61,6 @@ interface ViewRoute {
 }
 
 interface Options {
-   store: Store,
-   router: Router,
-   "view-routes": Array<ViewRoute>,
    "cl-crud": {
        crud: Crud
    }

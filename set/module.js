@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Cool from "cool";
-import store from '@/store'
-import router from '@/router'
+import store from "@/store";
+import router from "@/router";
 import { deepMerge, isFunction, isObject } from "../utils";
 
 export default function (options = {}) {
@@ -9,11 +9,11 @@ export default function (options = {}) {
 		options.events = {};
 	}
 
-	// 组件模块
-	let componentModules = [];
+	// 模块视图
+	let moduleViews = [];
 
-	// 组件列表
-	let components = [];
+	// 模块列表
+	let modules = [];
 
 	// 安装组件
 	function install(comp) {
@@ -70,7 +70,7 @@ export default function (options = {}) {
 						}
 
 						if (e.moduleName) {
-							componentModules.push(e);
+							moduleViews.push(e);
 						} else {
 							e.meta.label = e.label;
 
@@ -104,7 +104,7 @@ export default function (options = {}) {
 	}
 
 	// 解析组件
-	Cool.components.map((e) => {
+	Cool.modules.map((e) => {
 		if (!e) {
 			return null;
 		}
@@ -139,12 +139,12 @@ export default function (options = {}) {
 				...comp.value
 			};
 
-			components.push(comp);
+			modules.push(comp);
 			install(comp);
 		}
 	});
 
 	// 设置缓存
-	store.commit("SET_COMPONENT_MODULES", componentModules);
-	store.commit("SET_COMPONENT", components);
+	store.commit("SET_MODULE_VIEWS", moduleViews);
+	store.commit("SET_MODULE", modules);
 }

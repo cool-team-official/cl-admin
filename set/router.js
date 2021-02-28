@@ -29,7 +29,7 @@ export default function () {
 							)
 						) {
 							e.meta.iframeUrl = url;
-							e.component = () => import(`cool/components/base/pages/iframe/index.vue`);
+							e.component = () => import(`cool/modules/base/pages/iframe/index.vue`);
 						} else {
 							if (url.indexOf("views/") === 0) {
 								e.component = () => import(`@/${url}`);

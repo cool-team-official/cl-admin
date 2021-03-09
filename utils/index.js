@@ -1,5 +1,5 @@
 import { routerMode } from "@/config/env";
-import storage from './storage'
+import storage from "./storage";
 
 export function getUrlParam(name) {
 	let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -82,7 +82,7 @@ export function href(path, newWindow) {
 	let { search, origin, pathname } = window.location;
 
 	if (pathname == path) {
-		return false
+		return false;
 	}
 
 	let url = "";
@@ -108,9 +108,9 @@ export function deepTree(list) {
 	let newList = [];
 	let map = {};
 
-	list.forEach((e) => (map[e.id] = e));
+	list.forEach(e => (map[e.id] = e));
 
-	list.forEach((e) => {
+	list.forEach(e => {
 		let parent = map[e.parentId];
 
 		if (parent) {
@@ -120,8 +120,8 @@ export function deepTree(list) {
 		}
 	});
 
-	const fn = (list) => {
-		list.map((e) => {
+	const fn = list => {
+		list.map(e => {
 			if (e.children instanceof Array) {
 				e.children = orderBy(e.children, "orderNum");
 
@@ -140,7 +140,7 @@ export function revDeepTree(list = []) {
 	let id = 0;
 
 	const deep = (list, parentId) => {
-		list.forEach((e) => {
+		list.forEach(e => {
 			if (!e.id) {
 				e.id = id++;
 			}
@@ -163,18 +163,18 @@ export function revDeepTree(list = []) {
 export function debounce(fn, delay) {
 	let timer = null;
 
-	return function () {
+	return function() {
 		let args = arguments;
 		let context = this;
 
 		if (timer) {
 			clearTimeout(timer);
 
-			timer = setTimeout(function () {
+			timer = setTimeout(function() {
 				fn.apply(context, args);
 			}, delay);
 		} else {
-			timer = setTimeout(function () {
+			timer = setTimeout(function() {
 				fn.apply(context, args);
 			}, delay);
 		}
@@ -263,4 +263,4 @@ export function contains(parent, node) {
 	}
 }
 
-export { storage }
+export { storage };

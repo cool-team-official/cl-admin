@@ -1,13 +1,13 @@
-import VueRouter from 'vue-router'
+import VueRouter from "vue-router";
 import { Message } from "element-ui";
 import store from "@/store";
-import router, { ignore } from '@/router'
-import storage from '../utils/storage'
+import router, { ignore } from "@/router";
+import storage from "../utils/storage";
 
 // Remove Navigating to current location (XXX) is not allowed
 const routerPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
-	return routerPush.call(this, location).catch((error) => error);
+	return routerPush.call(this, location).catch(error => error);
 };
 
 export default function () {
@@ -18,7 +18,7 @@ export default function () {
 			}
 
 			// Parse route config
-			list.map((e) => {
+			list.map(e => {
 				if (!e.component) {
 					let url = e.viewPath;
 
@@ -29,13 +29,10 @@ export default function () {
 							)
 						) {
 							e.meta.iframeUrl = url;
-							e.component = () => import(`cool/modules/base/pages/iframe/index.vue`);
+							e.component = () =>
+								import(`@/cool/modules/base/pages/iframe/index.vue`);
 						} else {
-							if (url.indexOf("views/") === 0) {
-								e.component = () => import(`@/${url}`);
-							} else {
-								console.error(url, "异常");
-							}
+							e.component = () => import(`@/${url}`);
 						}
 					} else {
 						e.redirect = "/404";
@@ -44,7 +41,7 @@ export default function () {
 			});
 
 			// Batch add route
-			list.forEach((e) => {
+			list.forEach(e => {
 				router.addRoute("index", e);
 			});
 
@@ -57,7 +54,7 @@ export default function () {
 			}
 		},
 
-		to: (url) => {
+		to: url => {
 			if (router.path != url) {
 				router.push(url);
 			}
@@ -65,13 +62,13 @@ export default function () {
 	};
 
 	router.beforeEach((to, from, next) => {
-		const { token, browser } = store.getters
+		const { token, browser } = store.getters;
 
 		if (token) {
-			if (to.path.indexOf('/login') === 0) {
+			if (to.path.indexOf("/login") === 0) {
 				// 登录成功且 token 未过期，回到首页
-				if (!storage.isExpired('token')) {
-					return next('/')
+				if (!storage.isExpired("token")) {
+					return next("/");
 				}
 			} else {
 				// 添加路由进程
@@ -81,7 +78,7 @@ export default function () {
 				});
 			}
 		} else {
-			if (!ignore.token.some((e) => to.path.indexOf(e) === 0)) {
+			if (!ignore.token.some(e => to.path.indexOf(e) === 0)) {
 				return next("/login");
 			}
 		}
@@ -91,12 +88,12 @@ export default function () {
 			store.commit("COLLAPSE_MENU", true);
 		}
 
-		next()
-	})
+		next();
+	});
 
 	let lock = false;
 
-	router.onError((err) => {
+	router.onError(err => {
 		if (!lock) {
 			lock = true;
 

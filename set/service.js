@@ -1,8 +1,8 @@
 import Vue from "vue";
 import path from "path";
-import store from '@/store'
+import store from "@/store";
 
-export default function () {
+export default function() {
 	const files = require.context("@/service/", true, /\.js$/);
 	const ignore = ["./request.js"];
 
@@ -10,8 +10,8 @@ export default function () {
 
 	files
 		.keys()
-		.filter((e) => !ignore.includes(e))
-		.map((e) => {
+		.filter(e => !ignore.includes(e))
+		.map(e => {
 			if (e.includes("--ignore")) {
 				return false;
 			}
@@ -24,7 +24,7 @@ export default function () {
 			let prev = null;
 			let key = null;
 
-			parents.forEach((k) => {
+			parents.forEach(k => {
 				if (!curr[k]) {
 					curr[k] = {};
 				}

@@ -48,7 +48,7 @@ export default class BaseService {
 
 		if (options.url.indexOf("http") !== 0) {
 			if (options.url[0] === "@") {
-				options.url = options.url.replace('@', '')
+				options.url = options.url.replace("@", "");
 			} else {
 				options.url = path + options.url;
 			}

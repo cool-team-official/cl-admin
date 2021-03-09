@@ -17,8 +17,6 @@ export function Permission(value) {
 }
 
 export function Service(value) {
-	const { devServer } = require("@/../vue.config.js");
-
 	return function (target) {
 		// 命名
 		if (typeof value == "string") {
@@ -33,7 +31,7 @@ export function Service(value) {
 
 			if (proxy) {
 				target.prototype.proxy = proxy;
-				target.prototype.url = url || devServer.proxy[proxy].target;
+				target.prototype.url = url || process.env.PROXY_LIST[proxy].target;
 			}
 		}
 	};

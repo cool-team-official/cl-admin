@@ -13,7 +13,7 @@ export default function () {
 	// 本地模块
 	const local = files
 		.keys()
-		.map(e => {
+		.map((e) => {
 			let [, name, , error] = e.split("/");
 
 			if (!error) {
@@ -67,14 +67,14 @@ export default function () {
 
 			// 注册页面
 			if (pages) {
-				pages.forEach(e => {
+				pages.forEach((e) => {
 					router.addRoute(e);
 				});
 			}
 
 			// 注册视图
 			if (views) {
-				views.forEach(e => {
+				views.forEach((e) => {
 					if (!e.meta) {
 						e.meta = {};
 					}
@@ -94,7 +94,7 @@ export default function () {
 	}
 
 	// 解析模块
-	cool.modules.map(e => {
+	cool.modules.map((e) => {
 		if (!e) {
 			return null;
 		}
@@ -124,7 +124,7 @@ export default function () {
 				mod.value = mod.value.install(Vue, mod.options);
 			}
 		} else {
-			const item = local.find(m => m.name === mod.name);
+			const item = local.find((m) => m.name === mod.name);
 
 			if (item) {
 				mod.value = item.value;
@@ -143,7 +143,7 @@ export default function () {
 		if (mod) {
 			mod = {
 				name: mod.name,
-				options: mod.options,
+				options: mod.options || {},
 				...mod.value
 			};
 

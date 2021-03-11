@@ -2,7 +2,7 @@ import Vue from "vue";
 import cool from "@/cool";
 import store from "@/store";
 import router from "@/router";
-import { deepMerge, isFunction, isObject, isString } from "../utils";
+import { deepMerge, isFunction, isArray, isObject, isString } from "../utils";
 
 // 模块列表
 let modules = [];

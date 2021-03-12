@@ -42,7 +42,11 @@ export default function () {
 			// 注册组件
 			if (components) {
 				for (let i in components) {
-					Vue.component(components[i].name, components[i]);
+					if (components[i].name) {
+						Vue.component(components[i].name, components[i]);
+					} else {
+						console.error(`组件 ${i} 缺少 name 参数`)
+					}
 				}
 			}
 
@@ -84,7 +88,7 @@ export default function () {
 							ignore404: true
 						});
 					} else {
-						console.error(`[${name}-views]：path in null`);
+						console.error(`[${name}-views]：缺少 path 参数`);
 					}
 				});
 			}

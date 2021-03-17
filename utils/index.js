@@ -163,18 +163,18 @@ export function revDeepTree(list = []) {
 export function debounce(fn, delay) {
 	let timer = null;
 
-	return function() {
+	return function () {
 		let args = arguments;
 		let context = this;
 
 		if (timer) {
 			clearTimeout(timer);
 
-			timer = setTimeout(function() {
+			timer = setTimeout(function () {
 				fn.apply(context, args);
 			}, delay);
 		} else {
-			timer = setTimeout(function() {
+			timer = setTimeout(function () {
 				fn.apply(context, args);
 			}, delay);
 		}
@@ -215,6 +215,10 @@ export function isEmpty(value) {
 	}
 
 	return value === "" || value === undefined || value === null;
+}
+
+export function isBoolean(value) {
+	return typeof value === 'boolean'
 }
 
 export function last(data) {

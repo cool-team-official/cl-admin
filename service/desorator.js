@@ -28,7 +28,7 @@ export function Service(value) {
 			const { proxy, namespace, url, mock } = value;
 			const item = process.env.PROXY_LIST[proxy]
 
-			if (!item) {
+			if (proxy && !item) {
 				console.error(`${proxy} 指向的地址不存在！`)
 			}
 

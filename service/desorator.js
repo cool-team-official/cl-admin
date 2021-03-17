@@ -25,13 +25,19 @@ export function Service(value) {
 
 		// 复杂项
 		if (isObject(value)) {
-			let { proxy, namespace, url } = value;
+			const { proxy, namespace, url, mock } = value;
+			const item = process.env.PROXY_LIST[proxy]
+
+			if (!item) {
+				console.error(`${proxy} 指向的地址不存在！`)
+			}
 
 			target.prototype.namespace = namespace;
+			target.prototype.mock = mock;
 
 			if (proxy) {
 				target.prototype.proxy = proxy;
-				target.prototype.url = url || process.env.PROXY_LIST[proxy].target;
+				target.prototype.url = url || item ? item.target : null;
 			}
 		}
 	};

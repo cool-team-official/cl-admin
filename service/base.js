@@ -1,5 +1,5 @@
 import request from "@/service/request";
-import { baseUrl } from "@/config/env";
+import { baseUrl, isDev } from "@/config/env";
 
 export default class BaseService {
 	constructor() {
@@ -12,9 +12,7 @@ export default class BaseService {
 			update: "update"
 		};
 
-		if (!this.permission) {
-			this.permission = {};
-		}
+		if (!this.permission) this.permission = {}
 
 		for (let i in crud) {
 			if (this.namespace) {
@@ -26,93 +24,76 @@ export default class BaseService {
 	}
 
 	request(options = {}) {
-		if (!options.params) {
-			options.params = {};
-		}
+		if (!options.params) options.params = {}
 
-		let path = "";
+		let ns = "";
 
-		if (process.env.NODE_ENV == "development") {
-			path = this.proxy || baseUrl;
-		} else {
-			if (this.proxy) {
-				path = this.url;
+		// 是否 mock 模式
+		if (!this.mock) {
+			if (isDev) {
+				ns = this.proxy || baseUrl;
 			} else {
-				path = baseUrl;
+				ns = this.proxy ? this.url : baseUrl;
 			}
 		}
 
+		// 拼接前缀
 		if (this.namespace) {
-			path += "/" + this.namespace;
+			ns += "/" + this.namespace;
 		}
 
+		// 处理 http
 		if (options.url.indexOf("http") !== 0) {
-			if (options.url[0] === "@") {
-				options.url = options.url.replace("@", "");
-			} else {
-				options.url = path + options.url;
-			}
+			options.url = ns + options.url;
 		}
 
 		return request(options);
 	}
 
-	list(params) {
+	list(data) {
 		return this.request({
 			url: "/list",
 			method: "POST",
-			data: {
-				...params
-			}
+			data
 		});
 	}
 
-	page(params) {
+	page(data) {
 		return this.request({
 			url: "/page",
 			method: "POST",
-			data: {
-				...params
-			}
+			data
 		});
 	}
 
 	info(params) {
 		return this.request({
 			url: "/info",
-			params: {
-				...params
-			}
+			params
 		});
 	}
 
-	update(params) {
+	update(data) {
 		return this.request({
 			url: "/update",
 			method: "POST",
-			data: {
-				...params
-			}
+			data
 		});
 	}
 
-	delete(params) {
+	delete(data) {
 		return this.request({
 			url: "/delete",
 			method: "POST",
-			data: {
-				...params
-			}
+			data
 		});
 	}
 
-	add(params) {
+	add(data) {
 		return this.request({
 			url: "/add",
 			method: "POST",
-			data: {
-				...params
-			}
+			data
 		});
 	}
 }

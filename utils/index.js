@@ -21,34 +21,42 @@ export function isPc() {
 	return flag;
 }
 
-export const isIOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-
 export function getBrowser() {
-	let ua = navigator.userAgent.toLowerCase();
-	let btypeInfo = (ua.match(/firefox|chrome|safari|opera/g) || "other")[0];
-	if ((ua.match(/msie|trident/g) || [])[0]) {
-		btypeInfo = "msie";
-	}
-	let pc = "";
-	let prefix = "";
-	let plat = "";
+	const { clientHeight, clientWidth } = document.documentElement
 
-	let isTocuh =
+	// 浏览器信息
+	const ua = navigator.userAgent.toLowerCase();
+
+	// 浏览器类型
+	let type = (ua.match(/firefox|chrome|safari|opera/g) || "other")[0];
+
+	if ((ua.match(/msie|trident/g) || [])[0]) {
+		type = "msie";
+	}
+
+	// 平台标签
+	let tag = "";
+
+	const isTocuh =
 		"ontouchstart" in window || ua.indexOf("touch") !== -1 || ua.indexOf("mobile") !== -1;
 	if (isTocuh) {
 		if (ua.indexOf("ipad") !== -1) {
-			pc = "pad";
+			tag = "pad";
 		} else if (ua.indexOf("mobile") !== -1) {
-			pc = "mobile";
+			tag = "mobile";
 		} else if (ua.indexOf("android") !== -1) {
-			pc = "androidPad";
+			tag = "androidPad";
 		} else {
-			pc = "pc";
+			tag = "pc";
 		}
 	} else {
-		pc = "pc";
+		tag = "pc";
 	}
-	switch (btypeInfo) {
+
+	// 浏览器内核
+	let prefix = "";
+
+	switch (type) {
 		case "chrome":
 		case "safari":
 		case "mobile":
@@ -67,14 +75,53 @@ export function getBrowser() {
 			prefix = "webkit";
 			break;
 	}
-	plat = ua.indexOf("android") > 0 ? "android" : navigator.platform.toLowerCase();
+
+	// 操作平台
+	const plat = ua.indexOf("android") > 0 ? "android" : navigator.platform.toLowerCase();
+
+	// 屏幕信息
+	let screen = 'full'
+
+	if (clientWidth < 768) {
+		screen = 'xs'
+	} else if (clientWidth < 992) {
+		screen = 'sm'
+	} else if (clientWidth < 1200) {
+		screen = 'md'
+	} else if (clientWidth < 1920) {
+		screen = 'xl'
+	} else {
+		screen = 'full'
+	}
+
+	// 是否 ios
+	const isIOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+
+	// 浏览器版本
+	const version = (ua.match(/[\s\S]+(?:rv|it|ra|ie)[\/: ]([\d.]+)/) || [])[1]
+
+	// 是否 PC 端
+	const isPC = tag === 'pc'
+
+	// 是否移动端
+	const isMobile = isPC ? false : true
+
+	// 是否移动端 + 屏幕宽过小
+	const isMini = screen === 'xs' || isMobile
+
 	return {
-		version: (ua.match(/[\s\S]+(?:rv|it|ra|ie)[\/: ]([\d.]+)/) || [])[1],
-		plat: plat,
-		type: btypeInfo,
-		pc: pc,
-		prefix: prefix,
-		isMobile: pc == "pc" ? false : true
+		height: clientHeight,
+		width: clientWidth,
+		version,
+		type,
+		plat,
+		tag,
+		prefix,
+		isMobile,
+		isIOS,
+		isPC,
+		isMini,
+		screen
 	};
 }
 

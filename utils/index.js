@@ -22,7 +22,7 @@ export function isPc() {
 }
 
 export function getBrowser() {
-	const { clientHeight, clientWidth } = document.documentElement
+	const { clientHeight, clientWidth } = document.documentElement;
 
 	// 浏览器信息
 	const ua = navigator.userAgent.toLowerCase();
@@ -80,34 +80,34 @@ export function getBrowser() {
 	const plat = ua.indexOf("android") > 0 ? "android" : navigator.platform.toLowerCase();
 
 	// 屏幕信息
-	let screen = 'full'
+	let screen = "full";
 
 	if (clientWidth < 768) {
-		screen = 'xs'
+		screen = "xs";
 	} else if (clientWidth < 992) {
-		screen = 'sm'
+		screen = "sm";
 	} else if (clientWidth < 1200) {
-		screen = 'md'
+		screen = "md";
 	} else if (clientWidth < 1920) {
-		screen = 'xl'
+		screen = "xl";
 	} else {
-		screen = 'full'
+		screen = "full";
 	}
 
 	// 是否 ios
-	const isIOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+	const isIOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 
 	// 浏览器版本
-	const version = (ua.match(/[\s\S]+(?:rv|it|ra|ie)[\/: ]([\d.]+)/) || [])[1]
+	const version = (ua.match(/[\s\S]+(?:rv|it|ra|ie)[\/: ]([\d.]+)/) || [])[1];
 
 	// 是否 PC 端
-	const isPC = tag === 'pc'
+	const isPC = tag === "pc";
 
 	// 是否移动端
-	const isMobile = isPC ? false : true
+	const isMobile = isPC ? false : true;
 
 	// 是否移动端 + 屏幕宽过小
-	const isMini = screen === 'xs' || isMobile
+	const isMini = screen === "xs" || isMobile;
 
 	return {
 		height: clientHeight,
@@ -137,7 +137,7 @@ export function href(path, newWindow) {
 	if (routerMode == "history") {
 		url = origin + path;
 	} else {
-		url = origin + search + "#" + path;
+		url = href.substring(0, href.indexOf("#"));
 	}
 
 	if (newWindow) {
@@ -155,9 +155,9 @@ export function deepTree(list) {
 	let newList = [];
 	let map = {};
 
-	list.forEach(e => (map[e.id] = e));
+	list.forEach((e) => (map[e.id] = e));
 
-	list.forEach(e => {
+	list.forEach((e) => {
 		let parent = map[e.parentId];
 
 		if (parent) {
@@ -167,8 +167,8 @@ export function deepTree(list) {
 		}
 	});
 
-	const fn = list => {
-		list.map(e => {
+	const fn = (list) => {
+		list.map((e) => {
 			if (e.children instanceof Array) {
 				e.children = orderBy(e.children, "orderNum");
 
@@ -187,7 +187,7 @@ export function revDeepTree(list = []) {
 	let id = 0;
 
 	const deep = (list, parentId) => {
-		list.forEach(e => {
+		list.forEach((e) => {
 			if (!e.id) {
 				e.id = id++;
 			}
@@ -265,7 +265,7 @@ export function isEmpty(value) {
 }
 
 export function isBoolean(value) {
-	return typeof value === 'boolean'
+	return typeof value === "boolean";
 }
 
 export function last(data) {

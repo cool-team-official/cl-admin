@@ -1,5 +1,6 @@
 import { routerMode } from "@/config/env";
 import storage from "./storage";
+import { join } from 'path'
 
 export function getUrlParam(name) {
 	let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -135,7 +136,7 @@ export function href(path, newWindow) {
 	let url = "";
 
 	if (routerMode == "history") {
-		url = origin + process.env.BASE_URL + path;
+		url = origin + join(process.env.BASE_URL, path)
 	} else {
 		url = href.substring(0, href.indexOf("#"));
 	}

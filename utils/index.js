@@ -126,7 +126,7 @@ export function getBrowser() {
 }
 
 export function href(path, newWindow) {
-	let { search, origin, pathname } = window.location;
+	const { origin, pathname } = window.location;
 
 	if (pathname == path) {
 		return false;
@@ -135,7 +135,7 @@ export function href(path, newWindow) {
 	let url = "";
 
 	if (routerMode == "history") {
-		url = origin + path;
+		url = origin + process.env.BASE_URL + path;
 	} else {
 		url = href.substring(0, href.indexOf("#"));
 	}
